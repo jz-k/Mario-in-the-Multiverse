@@ -689,7 +689,6 @@ void setup_global_light() {
 /**
  * Process a camera node.
  */
-struct GraphNodeCamera * last_camera_node = NULL;
 void geo_process_camera(struct GraphNodeCamera *node) {
     Mtx *rollMtx = alloc_display_list(sizeof(*rollMtx));
     Mtx *viewMtx = alloc_display_list(sizeof(Mtx));
@@ -776,7 +775,6 @@ void geo_process_camera(struct GraphNodeCamera *node) {
 
     if (node->fnNode.node.children != 0) {
         gCurGraphNodeCamera = node;
-        last_camera_node = node;
         node->matrixPtr = &gCameraTransform;
         geo_process_node_and_siblings(node->fnNode.node.children);
         gCurGraphNodeCamera = NULL;

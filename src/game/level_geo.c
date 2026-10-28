@@ -63,7 +63,6 @@ Gfx *geo_envfx_main(s32 callContext, struct GraphNode *node, Mat4 mtxf) {
  * Geo function that generates a displaylist for the skybox. Can be assigned
  * as the function of a GraphNodeBackground.
  */
-extern struct GraphNodeCamera * last_camera_node;
 Gfx *geo_skybox_main(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) {
     Gfx *gfx = NULL;
     struct GraphNodeBackground *backgroundNode = (struct GraphNodeBackground *) node;
@@ -75,9 +74,7 @@ Gfx *geo_skybox_main(s32 callContext, struct GraphNode *node, UNUSED Mat4 *mtx) 
         struct GraphNodeCamera *camNode = (struct GraphNodeCamera *) gCurGraphNodeRoot->views[0];
         struct GraphNodePerspective *camFrustum =
             (struct GraphNodePerspective *) camNode->fnNode.node.parent;
-        if (last_camera_node != NULL) {
-            gfx = create_skybox_facing_camera(0, backgroundNode->background, camFrustum->fov, last_camera_node->posLerp, last_camera_node->focusLerp);
-        }
+        gfx = create_skybox_facing_camera(0, backgroundNode->background, camFrustum->fov, camNode->posLerp, camNode->focusLerp);
 #endif
     }
 
