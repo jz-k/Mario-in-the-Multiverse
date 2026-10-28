@@ -95,6 +95,7 @@ void init_rcp(s32 resetZB);
 void end_master_display_list(void);
 void render_init(void);
 void select_gfx_pool(void);
+void discard_frame_display_list(void);
 void display_and_vsync(void);
 
 extern u8 _60fps_on;

@@ -430,6 +430,13 @@ void select_gfx_pool(void) {
     gGfxPoolEnd = (u8 *) (gGfxPool->buffer + GFX_POOL_SIZE);
 }
 
+void discard_frame_display_list(void) {
+    select_gfx_pool();
+    init_rcp(CLEAR_ZBUFFER);
+    clear_framebuffer(0);
+    end_master_display_list();
+}
+
 /**
  * This function:
  * - Sends the current master display list out to be rendered.
