@@ -44,6 +44,7 @@ extern struct VblankHandler gGameVblankHandler;
 extern uintptr_t gPhysicalFramebuffers[3];
 extern uintptr_t gPhysicalChronosAuxFramebuffer;
 extern uintptr_t gPhysicalZBuffer;
+extern const Gfx dl_layer_render_mode_none[];
 extern void *gMarioAnimsMemAlloc;
 extern void *gDemoInputsMemAlloc;
 extern struct SPTask *gGfxSPTask;
