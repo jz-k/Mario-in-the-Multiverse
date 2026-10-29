@@ -11,6 +11,7 @@
 #include "src/engine/surface_collision.h"
 #include "bullet_system.h"
 #include "camera.h"
+#include "mario.h"
 #include "mario_actions_object.h"
 #include "object_list_processor.h"
 #include "tile_scroll.h"
