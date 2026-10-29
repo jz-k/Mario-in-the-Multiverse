@@ -163,7 +163,7 @@ Gfx *dobj_bullets(s32 callContext) {
 						&& ability_chronos_frame_can_progress());
 
 		//allocate DL
-		Gfx *dlS = alloc_display_list((1 + (sBulletCount * 3) + 8) * sizeof(Gfx));
+		Gfx *dlS = alloc_display_list((1 + (sBulletCount * 3) + 9) * sizeof(Gfx));
 		if (dlS == NULL) { return NULL; }
         Gfx *dlH = dlS;
 
@@ -299,6 +299,7 @@ Gfx *dobj_bullets(s32 callContext) {
 		}
 
 
+		gDPPipeSync(dlH++);
 		gSPGeometryMode(dlH++, G_TEXTURE_GEN, G_CULL_BACK | G_LIGHTING);
 		gDPSetCycleType(dlH++, G_CYC_1CYCLE);
 		gDPSetRenderMode(dlH++, G_RM_AA_ZB_XLU_INTER, G_RM_AA_ZB_XLU_INTER2);
@@ -467,6 +468,7 @@ Gfx *geo_danmaku(s32 callContext, struct GraphNode *node, UNUSED void *context) 
 			}
 		}
 
+		gDPPipeSync(dlH++);
 		gSPGeometryMode(dlH++, G_TEXTURE_GEN, G_CULL_BACK | G_LIGHTING);
 		gDPSetCycleType(dlH++, G_CYC_1CYCLE);
 		gDPSetRenderMode(dlH++, G_RM_AA_ZB_XLU_INTER, G_RM_AA_ZB_XLU_INTER2);
