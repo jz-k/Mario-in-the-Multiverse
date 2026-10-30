@@ -965,17 +965,24 @@ void geo_process_animated_part(struct GraphNodeAnimatedPart *node) {
         translation[2] += gCurrAnimData[retrieve_animation_index(gCurrAnimFrame, &gCurrAnimAttribute)]
                           * gCurrAnimTranslationMultiplier;
 
-        if (!_60fps_midframe) {
-            gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 0] = translation[0];
-            gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 1] = translation[1];
-            gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 2] = translation[2];
-        } else {
-            gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 0] = approach_pos_lerp(gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 0], translation[0]);
-            gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 1] = approach_pos_lerp(gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 1], translation[1]);
-            gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 2] = approach_pos_lerp(gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0 + 2], translation[2]);
-            vec3f_set(translation, gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][0], gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][1], gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack[gCurrAnimPos][2]);
+        Vec3s *transStack = gCurGraphNodeObjectNode->header.gfx.animInfo.animRotStack;
+        u32 *transPos = &gCurrAnimPos;
+        if (is_held_object) {
+            transStack = held_obj_rotstack;
+            transPos = &held_obj_anim_pos;
         }
-        gCurrAnimPos++;
+
+        if (!_60fps_midframe) {
+            transStack[*transPos][0 + 0] = translation[0];
+            transStack[*transPos][0 + 1] = translation[1];
+            transStack[*transPos][0 + 2] = translation[2];
+        } else {
+            transStack[*transPos][0 + 0] = approach_pos_lerp(transStack[*transPos][0 + 0], translation[0]);
+            transStack[*transPos][0 + 1] = approach_pos_lerp(transStack[*transPos][0 + 1], translation[1]);
+            transStack[*transPos][0 + 2] = approach_pos_lerp(transStack[*transPos][0 + 2], translation[2]);
+            vec3f_set(translation, transStack[*transPos][0], transStack[*transPos][1], transStack[*transPos][2]);
+        }
+        (*transPos)++;
 
         gCurrAnimType = ANIM_TYPE_ROTATION;
     } else {
@@ -1608,6 +1615,8 @@ void geo_process_held_object(struct GraphNodeHeldObject *node) {
         gGeoTempState.translationMultiplier = gCurrAnimTranslationMultiplier;
         gGeoTempState.attribute = gCurrAnimAttribute;
         gGeoTempState.data = gCurrAnimData;
+        u32 holderAnimPos = gCurrAnimPos;
+        u8 holderIsHeld = is_held_object;
         gCurrAnimType = ANIM_TYPE_NONE;
         gCurGraphNodeHeldObject = (void *) node;
         if (node->objNode->header.gfx.animInfo.curAnim != NULL) {
@@ -1620,6 +1629,9 @@ void geo_process_held_object(struct GraphNodeHeldObject *node) {
         }
 
         geo_process_node_and_siblings(node->objNode->header.gfx.sharedChild);
+        // Console fix: the held object's animated parts must not use the holder's animRotStack slots
+        gCurrAnimPos = holderAnimPos;
+        is_held_object = holderIsHeld;
         gCurGraphNodeHeldObject = NULL;
         gCurrAnimType = gGeoTempState.type;
         gCurrAnimEnabled = gGeoTempState.enabled;
